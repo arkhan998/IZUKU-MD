@@ -455,37 +455,31 @@ let buttons = [{
 })   
 //-------------------------------------------------111
 cmd({
-  pattern: 'tiktok',
-  fromMe: true,
-  desc: 'Download TikTok video without watermark',
+  pattern: 'fb',
+  alias:'facebook',
+  fromMe: false,
+  catergory:'downloader',
+  react:'🔥',
+  desc: 'Download fb video without watermark',
 },
-async (Void, citel, text) => {
-  const url = text.split(' ')[1];
+async (Void,citel, text,) => {
+  let url = text.split(' ')[0];
 
   if (!text) {
-    return citel.reply('Please provide a TikTok video URL.');
+    return citel.reply('Please provide a fb video URL.');
   }
-
-  const apiUrl = `https://vihangayt.me/download/tiktok?url=${encodeURIComponent(url)}`;
 
   try {
-    const response = await axios.get(apiUrl);
+    let {data}= await axios.get(`https://api-smd.vercel.app/api/fb?url=${encodeURIComponent(url)}`);
 
-    if (response.data && response.data.video_url) {
-      // Download the video
-      const videoResponse = await axios.get(response.data.video_url, { responseType: 'arraybuffer' });
+   if(! data || !data.result ) return citel.reply("no results found")
 
-      // Send the video as a reply
-      await Void.sendMessage(citel.chat, { video: videoResponse.data }, MessageType.video, { quoted: citel.data });
-    } else {
-      citel.reply('Unable to fetch the download . The TikTok link may be invalid or the service is down.');
-    }
+    await 
+Void.sendMessage(citel.chat, {video : { url :data.result.urls[1].url } , },)
   } catch (error) {
-    citel.reply(`Error: ${error.message}`);
+    citel.reply(`Error: ${error.message || error}`);
   }
 });
-
-
      //---------------------------------------------------------------------------
  cmd({
              pattern: "antilink",
@@ -519,6 +513,7 @@ async (Void, citel, text) => {
              await Void.sendButtonText(citel.chat, buttons, `Activate antilink:Deletes Link + kick`, Void.user.name, citel);
          }
      )
+//-----------------------------------------------------
      cmd({
         pattern: 'ss',
         alias :['webss' , 'fullss'],
@@ -538,6 +533,43 @@ return await Void.sendMessage(citel.chat ,{image : media } , {quoted:citel} )
 catch (err) { return citel.reply("```Error While Fetching Snapshot```")}
     }
 )
+cmd({
+  pattern: 'calc',
+  desc: 'A simple calculator command for basic arithmetic operations.',
+  catergory:'watsusi',
+}, (Void, citel, text) => {
+  const parts = text.split(' ');
+  if (parts.length !== 3) {
+    return citel.reply('Usage: !calc <num1> <operator> <num2>');
+  }
+  const num1 = parseFloat(parts[0]);
+  const operator = parts[1];
+  const num2 = parseFloat(parts[2]);
+  if (isNaN(num1) || isNaN(num2)) {
+    return citel.reply('Please provide valid numerical values.');
+  }
+
+  let result;
+  switch (operator) {
+    case '+':
+      result = num1 + num2;
+      break;
+    case '-':
+      result = num1 - num2;
+      break;
+    case '*':
+      result = num1 * num2;
+      break;
+    case '/':
+      result = num1 / num2;
+      break;
+    default:
+      return citel.reply('Invalid operator. Supported operators are +, -, *, and /.');
+  }
+
+  citel.reply(`Result: ${result}`);
+});
+
 
 
      //---------------------------------------------------------------------------

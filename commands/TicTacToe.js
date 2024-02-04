@@ -14,8 +14,7 @@
  const ty = eco.connect(mongodb);
 
 
-cmd(
-  {
+cmd({
     pattern: "deltic",
     desc: "deletes TicTacToe running session.",
     filename: __filename,
